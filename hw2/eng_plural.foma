@@ -1,0 +1,25 @@
+### eng_plural.foma ###
+
+define IrregularNounPlural;
+
+define Vowel [ a | i | e | o | u | y ] ;
+define Consonant [ b | c | d  | f | g | h | j | k | l | m | n | p | q | r | s | t | v | w | x | z] ;
+define Letter [ Vowel | Consonant ] ;
+define Word [ Letter ]+ ;
+define NounMark "+N" ;
+define NounNumber "+Sg" | "+Pl" ;
+define Noun Word NounMark NounNumber ;
+
+define NounAffixation "+N" + "+Sg" -> "" || _ .#., "+N" "+Pl" -> "!" s || _ .#. ;
+define Sibilant [ x | s | z | c h | s h ];
+define SibException [ Letter ]+ a r c h "!" s ;
+define eInsertion [..] -> e || Sibilant _ "!" s .#.;
+define checkSibilant [ sibException .P. eInsertion ];
+define yReplacement y -> i e || Consonant _ "!" s .#.;
+define Cleanup "!" -> "" || _ ;
+define RegularNoun [ NounAffixation .o. yReplacement .o. checkSibilant .o. Cleanup ] ;
+define Grammar Noun .o. [ IrregularNounPlural .P. RegularNoun ] ;
+
+push Grammar
+
+save stack eng_plural.bin
